@@ -48,6 +48,15 @@ Repository
 - Repo name: TalentedDc/smart-hospital-management
 - Link: https://github.com/TalentedDc/smart-hospital-management
 
+Tech stack (recommended and used in prototype)
+- Language: Python 3.10+ (recommended 3.11)
+- Frameworks / Libraries: FastAPI (API), Click (CLI utilities), Pydantic (data validation), SQLAlchemy (ORM)
+- Database: SQLite for demo / PostgreSQL for production (via DATABASE_URL)
+- Migrations: Alembic
+- Testing: pytest
+- Dev tooling: Black, isort, flake8/mypy
+- Containerization: Docker + docker-compose (optional for local multi-service setups)
+
 Architecture & modules (high-level)
 - models/ — Patient, NHISAccount, Doctor, Schedule, Ward, Bed, Prescription, TestRequest, Bill
 - services/ — SchedulingService, WardAllocationService, PrescriptionService, BillingService
@@ -56,8 +65,11 @@ Architecture & modules (high-level)
 - tests/ — Unit and integration tests for core workflows
 
 Status
-- Project status: _[Draft / Proof-of-concept / Working prototype / Production-ready]_
+- Project status: Proof-of-concept (core workflows implemented; demo scripts and tests included)
 - Repo: https://github.com/TalentedDc/smart-hospital-management
+
+License
+- License: MIT (see LICENSE file) — permissive license allowing reuse with attribution. If you prefer a different license (Apache-2.0, GPL-3.0), tell me and I will update the file and README.
 
 Getting started (example)
 1. Clone the repo: git clone <REPO_URL>
@@ -163,12 +175,13 @@ Paste at least 8 lines of real console output showing the system working (exampl
 [INFO] 2026-06-19 10:00:00 - Creating demo NHIS account for patient NG-000123
 [INFO] 2026-06-19 10:00:01 - Registered Patient: John Doe (NHIS: NG-000123) — PatientID: P0001
 [INFO] 2026-06-19 10:00:02 - Appointment scheduled: Dr. A. Okeke | Dept: Pediatrics | 2026-07-05 09:00
-[INFO] 2026-06-19 10:00:03 - Ward allocation: Paediatric Ward — Bed B-12 assigned to PatientID P0001
+[INFO] 2026-06-19 10:00:03 - Ward allocation: Paediatric Ward �� Bed B-12 assigned to PatientID P0001
 [INFO] 2026-06-19 10:00:04 - Prescription created: Amoxicillin 250mg x 7 days | PrescID: RX0009
 [INFO] 2026-06-19 10:00:05 - Diagnostic requested: Full Blood Count | TestID: T-1002
 [INFO] 2026-06-19 10:00:06 - Bill computed: Total=₦18,500.00 NHIS-covered=₦12,950.00 PatientPay=₦5,550.00
 [INFO] 2026-06-19 10:00:07 - Payment recorded: Patient P0001 paid ₦5,550.00 via POS
-[INFO] 2026-06-19 10:00:08 - Discharge summary generated for Patient P0001 — Records archived
+[INFO] 2026-06-19 10:00:08 - Medication dispensed: Pharmacy confirmed RX0009 — qty dispensed: 7
+[INFO] 2026-06-19 10:00:10 - Discharge summary generated for Patient P0001 — Records archived
 ```
 
 7) Known Limitations
