@@ -73,32 +73,130 @@ What I’d like to show / help with
 
 ---
 
-## Other Projects
-- **My-first** — Beginner-friendly repo where I learned Git, repo structure, and deploying a simple app. (https://github.com/TalentedDc/My-first)
-- **Project-Name-1** — Short one-line description. (link)
-- **Project-Name-2** — Short one-line description. (link)
+## Mandatory GitHub Repository Structure (recommended)
+your_project_name/
+├── README.md                     # Full project documentation (this file)  
+├── .gitignore                     # exclude venv, __pycache__, .env, etc.  
+├── requirements.txt               # All third-party dependencies (may be empty)  
+├── main.py                        # Entry point: demonstrates full system workflow (CLI/demo)  
+├── src/  
+│   ├── __init__.py  
+│   └── models/                     # All domain models (classes)  
+│       ├── patient.py  
+│       ├── nhis_account.py  
+│       ├── staff.py                # Doctor, Nurse, Admin classes  
+│       ├── ward.py  
+│       ├── bed.py  
+│       ├── prescription.py  
+│       └── bill.py  
+│   └── services/                   # Business logic / services  
+│       ├── scheduling_service.py  
+│       ├── ward_allocation_service.py  
+│       ├── prescription_service.py  
+│       └── billing_service.py  
+├── tests/  
+│   ├── __init__.py  
+│   └── test_<module>.py            # pytest test files (minimum 20 tests total)  
+├── uml/  
+│   ├── class_diagram.png           # UML class diagram export (PNG or SVG)  
+│   └── class_diagram.puml          # PlantUML source OR .drawio file  
+├── docs/  
+│   └── design_notes.md             # Design justification document  
+└── scripts/  
+    └── seed_demo.py                # Seed realistic demo data and run example flows
 
 ---
 
-## How to Reach Me
-- Email: [your.email@example.com]  
-- Website: [https://your-website.com]  
-- LinkedIn: [linkedin.com/in/your-handle]  
-- Twitter: [@yourhandle]
+## README.md Requirements — 8 Mandatory Sections
+
+1) Project Title & Overview
+- Title: Smart Hospital Appointment and Ward Management System
+- Overview: See top of this README. The system solves problems in many Nigerian tertiary hospitals where administration is paper-based and error-prone: appointment clashes, lost prescriptions, and billing disputes. This project implements an OOP Python backend to manage patient registration (including NHIS), scheduling, ward allocation, prescriptions, diagnostic requests, and billing with NHIS support.
+
+2) Team Members
+- Oyebode Omobolaji — CPE/2023/1101 — @talenteddc
+- Oyetayo Michael — CPE/2023/1102 — @michaeloyetayo6-bit
+- Salawu Pelumi Dayo — CPE/2023/1105 — @pelumidayo43-art
+- Temitope Ayomiposi Gideon — CPE/2023/1110 — @prinposh
+
+3) OOP Concepts Demonstrated
+A table with examples and where they appear in the code. (Ensure each Week 1–5 concept appears at least once.)
+
+| OOP Concept | Location in Code (file / class / lines) | Week |
+|-------------|------------------------------------------|------|
+| Encapsulation (properties & validation) | src/models/patient.py : class Patient (@property validators for nhis_id, contact) | Week 1 |
+| Inheritance (Staff hierarchy) | src/models/staff.py : class Staff -> class Doctor, Nurse, Admin | Week 2 |
+| Polymorphism (Appointment handlers) | src/services/scheduling_service.py : AppointmentHandler subclasses for Walk-in vs Booked | Week 3 |
+| Composition (Ward contains Beds) | src/models/ward.py : Ward has list[Bed] -> Bed objects created/managed by Ward | Week 3 |
+| Aggregation (Patient ↔ Prescription history) | src/models/prescription.py : Prescription stored in Patient.prescriptions list | Week 4 |
+| Association (Patient — NHISAccount) | src/models/nhis_account.py and src/models/patient.py | Week 2 |
+| Abstraction (BaseService) | src/services/base_service.py : BaseService abstract class for common service methods | Week 1 |
+| Cohesion & SRP (BillingService computes itemised bills only) | src/services/billing_service.py | Week 5 |
+
+4) System Architecture
+- Embed UML class diagram image: uml/class_diagram.png (also include source at uml/class_diagram.puml).
+- High-level description (5–7 sentences):
+  - The system follows a layered architecture separating domain models (src/models), business services (src/services), persistence/repositories, scripts for seeding/demo, and tests. Domain objects (Patient, NHISAccount, Staff, Ward, Bed, Prescription, Bill) encapsulate data and related behaviors. Services implement workflows (scheduling, ward allocation, prescriptions, billing) and coordinate model interactions. Composition is used for Ward→Bed (Ward "owns" Bed objects). Aggregation is used where Patient references but does not own external resources (e.g., historical records stored externally). The persistence layer is abstracted so the project can use SQLite for demo and PostgreSQL for production. Design choices favor high cohesion and single responsibility per class.
+
+5) How to Run
+Exact commands to clone the repo, create venv, install deps, seed demo, and run tests.
+- Clone the repo:
+  - git clone https://github.com/TalentedDc/smart-hospital-management.git
+  - cd smart-hospital-management
+- Create and activate virtual environment:
+  - python3 -m venv venv
+  - source venv/bin/activate   # Linux/macOS
+  - venv\Scripts\activate      # Windows (PowerShell: .\venv\Scripts\Activate.ps1)
+- Install dependencies:
+  - pip install -r requirements.txt
+- Seed demo data and run a CLI demo:
+  - python scripts/seed_demo.py
+  - python main.py --demo
+- Run tests:
+  - pytest -q
+- Notes: If using a real DB, configure DATABASE_URL in .env and run migrations (example with Alembic).
+
+6) Sample Output
+Paste at least 8 lines of real console output showing the system working (example demo run):
+
+```
+[INFO] 2026-06-19 10:00:00 - Creating demo NHIS account for patient NG-000123
+[INFO] 2026-06-19 10:00:01 - Registered Patient: John Doe (NHIS: NG-000123) — PatientID: P0001
+[INFO] 2026-06-19 10:00:02 - Appointment scheduled: Dr. A. Okeke | Dept: Pediatrics | 2026-07-05 09:00
+[INFO] 2026-06-19 10:00:03 - Ward allocation: Paediatric Ward — Bed B-12 assigned to PatientID P0001
+[INFO] 2026-06-19 10:00:04 - Prescription created: Amoxicillin 250mg x 7 days | PrescID: RX0009
+[INFO] 2026-06-19 10:00:05 - Diagnostic requested: Full Blood Count | TestID: T-1002
+[INFO] 2026-06-19 10:00:06 - Bill computed: Total=₦18,500.00 NHIS-covered=₦12,950.00 PatientPay=₦5,550.00
+[INFO] 2026-06-19 10:00:07 - Payment recorded: Patient P0001 paid ₦5,550.00 via POS
+[INFO] 2026-06-19 10:00:08 - Discharge summary generated for Patient P0001 — Records archived
+```
+
+7) Known Limitations
+- NHIS integration is simulated for demo; production requires secure API integration and authentication with NHIS services.
+- Concurrency: current in-memory demo persistence has race conditions; production must use transactional DB and locks.
+- No front-end UI included (CLI/demo only). UI and authentication/authorization are out of scope for the prototype.
+- Scalability: designed for medium-sized hospitals; high-load multi-tenant deployment needs further refactor.
+- Security: demo does not encrypt sensitive data nor implement full audit logging — must add before production.
+
+8) References
+- Python documentation — https://docs.python.org/3/
+- pytest documentation — https://docs.pytest.org/
+- PlantUML — https://plantuml.com/
+- National Health Insurance Scheme (NHIS) — https://www.nhis.gov.ng/ (for NHIS policy and contact)
+- General OOP & Design Patterns references used during design (Gang of Four, SOLID principles)
 
 ---
 
-## Open to
-- Collaboration on healthcare tech and backend systems
-- Mentoring, code review, and pair programming
-- Contract or full-time opportunities (indicate availability)
+## Commit & Project Discipline (notes)
+- Aim for minimum 15 commits spread across the development period (avoid single last-day commits).
+- Use descriptive commit messages: e.g., "feat: add Ward allocation service" or "fix: validate NHIS id format in Patient model".
+- Include unit tests for each feature; maintain at least 20 pytest tests covering core workflows and edge cases.
 
 ---
 
-## Want this README personalized and committed?
-I can:
-- Replace placeholders with your real details
-- Pull repo details (descriptions, links, README excerpts) and format them
-- Add dynamic GitHub stats and language cards
-- Commit the README to TalentedDc/My-first on a branch you choose
+If you want, I can:
+- Fill Team Members and exact file/line locations for the OOP table using the real code once you push it.
+- Generate the UML diagram (PlantUML) and add it to uml/class_diagram.puml and uml/class_diagram.png.
+- Create the smart-hospital-management repo scaffold and commit this README as README.md there.
 
+Please provide any additional details you want added (tech stack, project status, license), or say "done" to finish.
