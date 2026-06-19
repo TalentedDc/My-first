@@ -1,0 +1,148 @@
+' Smart Hospital - UML class diagram (PlantUML)
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+' Packages / grouping
+package "Models" {
+  class Patient {
+    +patient_id: str
+    +name: str
+    +dob: date
+    +gender: str
+    +contact: str
+    +nhis_id: str
+    +register()
+    +get_bill(): Bill
+  }
+
+  class NHISAccount {
+    +nhis_id: str
+    +valid_until: date
+    +provider: str
+    +is_valid(): bool
+  }
+
+  abstract class Staff {
+    +staff_id: str
+    +name: str
+    +department: str
+    +role: str
+    +available_slots: List[datetime]
+    +is_available(dt): bool
+  }
+
+  class Doctor {
+    +specialty: str
+    +schedule: Schedule
+    +create_prescription(p: Patient, rx): Prescription
+  }
+
+  class Nurse {
+    +ward_assigned: str
+    +allocate_bed(p: Patient): Bed
+  }
+
+  class Admin {
+    +create_account()
+    +manage_billing()
+  }
+
+  class Schedule {
+    +appointments: List<Appointment>
+    +add_appointment(a: Appointment)
+    +detect_conflict(a: Appointment): bool
+  }
+
+  class Appointment {
+    +appointment_id: str
+    +patient: Patient
+    +doctor: Doctor
+    +datetime: datetime
+    +status: enum
+    +book()
+    +cancel()
+  }
+
+  class Ward {
+    +ward_id: str
+    +type: enum {GENERAL, ICU, MATERNITY, PAEDIATRIC}
+    +beds: List[Bed]
+    +occupancy(): int
+    +assign_bed(p: Patient): Bed
+  }
+
+  class Bed {
+    +bed_id: str
+    +ward_id: str
+    +is_occupied: bool
+    +assign(patient_id: str)
+    +release()
+  }
+
+  class Prescription {
+    +prescription_id: str
+    +patient_id: str
+    +doctor_id: str
+    +medications: List[Medication]
+    +status: enum {CREATED, DISPENSED, CANCELLED}
+    +dispense()
+  }
+
+  class Medication {
+    +name: str
+    +dose: str
+    +quantity: int
+  }
+
+  class TestRequest {
+    +test_id: str
+    +patient_id: str
+    +type: str
+    +status: enum
+    +result: str
+  }
+
+  class Bill {
+    +bill_id: str
+    +patient_id: str
+    +items: List[BillItem]
+    +total: Decimal
+    +nhis_covered: Decimal
+    +compute_totals()
+  }
+
+  class BillItem {
+    +description: str
+    +amount: Decimal
+    +is_nhis_covered: bool
+  }
+}
+
+' Relationships
+Patient "1" -- "0..1" NHISAccount : has
+Patient "1" o-- "*" Prescription : prescriptions
+Patient "1" --> "*" Appointment : appointments
+Doctor <|-- Staff
+Nurse <|-- Staff
+Admin <|-- Staff
+Staff "1" -- "1" Schedule : owns
+Schedule "1" o-- "*" Appointment
+Appointment --> Patient
+Appointment --> Doctor
+Ward *-- "0..*" Bed : contains
+Bed "0..1" -- "0..1" Patient : assignedTo
+Doctor "1" --> "*" Prescription : issues
+TestRequest --> Patient
+Bill "1" --> "*" BillItem
+Patient "1" --> "1" Bill : billed_with
+
+' Notes
+note left of Ward
+  Ward composition -> owns Bed objects.
+end note
+
+note right of Bill
+  Billing applies NHIS deductions automatically
+end note
+
+@enduml
